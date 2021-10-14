@@ -15,7 +15,6 @@ import Posts from './Components/Posts/Posts';
 
 function App() {
 
-  console.log("app.js calıstı")
 
   const dispatch = useDispatch();
 

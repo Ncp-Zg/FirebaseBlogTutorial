@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,10 +13,11 @@ const PostCard = ({ pst, index }) => {
   }));
   const history = useHistory();
   const dispatch = useDispatch();
-  const[num,setNum]=useState({like:0,likeowner:[]})
-
+  // const[num,setNum]=useState({like:0,likeowner:[]})
+  const ref = useRef([])
+  const reflike =useRef(pst.postData.likeNum)
   const handlefav=()=>{
-    dispatch(doFavNum(!(pst.postData.like),pst.postId,num.like,pst,user_id,num.likeowner))
+    dispatch(doFavNum(!(pst.postData.like),pst.postId,reflike.current,pst,user_id,ref.current))
   }
 
   useEffect(()=>{
@@ -24,12 +25,14 @@ const PostCard = ({ pst, index }) => {
             const prevData = []
             const data = {postData:snapshot.data()}
             prevData.push(...(data.postData.likeOwner))
-            setNum({like:data.postData.likeNum,likeowner:prevData})
+            // setNum({like:data.postData.likeNum,likeowner:prevData})
+            ref.current = data.postData.likeOwner
+            reflike.current = data.postData.likeNum
 
     })
-  },[pst.postData.likeNum])
+  },[reflike.current])
 
-  console.log(num.likeowner)
+
 
 
   return (
@@ -49,19 +52,19 @@ const PostCard = ({ pst, index }) => {
                   {(pst.postData.likeOwner.includes(user_id)) ? (
                     (user_id ? <MdFavorite 
                       onClick={() => {
-                        handlefav(!(pst.postData.like),pst.postId,num.like,pst,user_id,num.likeowner)
+                        handlefav(!(pst.postData.like),pst.postId,reflike.current,pst,user_id,ref.current)
                       }}
                       style={{ color: "red",fontSize:"30px" }}
                     /> : <MdFavorite style={{ color: "red", fontSize:"30px"}}/>)
                     
                   ) : (
                     (user_id? (<MdFavoriteBorder
-                      onClick={() => {handlefav(!(pst.postData.like),pst.postId,num.like,pst,user_id,num.likeowner)}}
+                      onClick={() => {handlefav(!(pst.postData.like),pst.postId,reflike.current,pst,user_id,ref.current)}}
                       style={{ color: "red" ,fontSize:"30px"}}
                     />):(<MdFavorite style={{ color: "red" , fontSize:"30px"}}/>))
                     
                   )}
-                  <p className="col align-self-start my-2 pt-1 fw-bold">{num.like}</p>
+                  <p className="col align-self-start my-2 pt-1 fw-bold">{reflike.current}</p>
 
                   <p className="py-1 me-1 px-2 bg-dark text-white d-inline my-2 ">
                     {pst.postData.author}

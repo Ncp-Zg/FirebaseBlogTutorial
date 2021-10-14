@@ -256,13 +256,13 @@ export const doFavNum = (data,postId,num,pst,userId,likeOwn)=> dispatch=>{
 pst.postData.likeNum =num+1
             firestore.collection("posts").doc(postId).update({
                 likeOwner:[...likeOwn,userId]
-            }).then(()=>console.log(pst))
+            })
     }else{
        
             pst.postData.likeNum =num-1
             firestore.collection("posts").doc(postId).update({
                 likeOwner:likeOwn.filter(id=>id!==userId)
-            }).then(()=>console.log(pst))
+            })
         
     }
 
